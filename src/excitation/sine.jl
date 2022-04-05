@@ -3,8 +3,9 @@ struct SineParameters{T1,T2,T3,T4}
     mag::T2
     phi::T3
     tOff::T4
-    function SineParameters(omega::T1,mag::T2,phi::T3,tOff::T4) where {T1,T2,T3,T4}
-        return new{T1,T2,T3,T4}(omega,mag,phi,tOff)
+    function SineParameters(omega::T1, mag::T2, phi::T3, tOff::T4) where {T1,T2,T3,T4}
+        return new{T1,T2,T3,T4}(omega, mag, phi, tOff)
+    end
 end
 
 function SineParameters(d::Dict)
