@@ -5,7 +5,7 @@ module CochleaSolver
 
 # Excitation
 include("excitation/raisedsine.jl")
-export RaisedSineParams, raisedSine!
+export RaisedSineParams, raisedsine!
 
 include("excitation/click.jl")
 export ClickParams, click!
@@ -17,6 +17,6 @@ include("excitation/twotone.jl")
 export TwoToneParameters, twotone!, twotonesuppression!
 
 include("solve.jl")
-export solvecochlea
+export solve_cochlea
 
 end

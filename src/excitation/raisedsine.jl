@@ -25,7 +25,7 @@ end
 
     Computes raised sine excitation for state space vector V at time t
 """
-function raisedSine!(V, p, t)
+function raisedsine!(V, p, t)
     if t < 0
         V .*= 0
     elseif t < p.tR
