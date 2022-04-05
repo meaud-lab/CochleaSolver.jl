@@ -30,7 +30,7 @@ using Test
 
         testv = Vector{Float64}(undef, ndof)
         #t<0
-        @test all(raisedSine!(testv, testparams, -rand(Float64, 1)[1]) .== 0)
+        @test all(raisedsine!(testv, testparams, -rand(Float64, 1)[1]) .== 0)
 
     end
 end

@@ -27,7 +27,7 @@ end
 """
 function raisedsine!(V, p, t)
     if t < 0
-        V .*= 0
+        V .= zero(V)
     elseif t < p.tR
         V = p.mag .* sin.(p.omega .* t .+ p.phi) * (1 .+ cos.(π .* (t .- p.tR) ./ p.tR)) ./ 2
     elseif t < p.t0
@@ -35,6 +35,6 @@ function raisedsine!(V, p, t)
     elseif t < p.tOn
         V = p.mag .* sin.(p.omega .* t .+ p.phi) * (1 .+ cos.(π .* (t .- p.t0) ./ p.tR)) ./ 2
     else
-        V .*= 0
+        V .= zero(V)
     end
 end
