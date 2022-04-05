@@ -1,7 +1,7 @@
 
 struct Excitation{T1,T2}
-    stimulus!
-    stimulus_parameters
+    stimulus!::T1
+    stimulus_parameters::T2
     function Excitation(stim, params)
         return new{typeof(stim),typeof(params)}(stim, params)
     end
@@ -30,5 +30,5 @@ function Excitation(d::Dict)
         p = TwoToneParameters(d)
         f = twotonesuppression!
     end
-    return Excitation(p, f)
+    return Excitation(f, p)
 end

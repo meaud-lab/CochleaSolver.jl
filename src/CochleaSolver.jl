@@ -4,6 +4,9 @@ module CochleaSolver
 # export solve_cochlea
 
 # Excitation
+include("excitation/excitation.jl")
+export Excitation
+
 include("excitation/raisedsine.jl")
 export RaisedSineParams, raisedsine!
 

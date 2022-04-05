@@ -113,24 +113,23 @@ function dxFENonLinearVector3!(dxdt, x, p, t)
 
         # Compute MET current
         Ihb = zeros(p.N - 1, 1)
-        boolBigHB = abs2.(p.uHB) .> 1e-44
-        @. Ihb[boolBigHB] = p.B0[boolBigHB, l] * (1 / (1 + exp(-(uHB[boolBigHB] - p.X0[boolBigHB, l]) / p.deltaX[boolBigHB, l])) - p.P0) - p.q[boolBigHB, l] * uHB[boolBigHB]
-        Ihb *= p.IhbNLFactor[:, l]
+        boolBigHB = abs2.(uHB) .> 1e-44
+        Ihb[boolBigHB] = p.B0[boolBigHB, l] .* (1 ./ (1 .+ exp.(-(uHB[boolBigHB] .- p.X0[boolBigHB, l]) ./ p.deltaX[boolBigHB, l])) .- p.P0) .- p.q[boolBigHB, l] .* uHB[boolBigHB]
+        Ihb .*= p.IhbNLFactor[:, l]
 
         # Compute nonlinear force vector
         FesNL .+= p.Y_FesNL[l] * Ihb
 
     end # end gauss
 
-    dxdt[1:p.nMechTotal] .= p.A1 * x
+    dxdt[1:p.nMechTotal] = p.A1 * x
 
-    dxdt[p.nMechTotal+1:2*p.nMechTotal] .= x[1:p.nMechTotal]
-    if (p.elecLongCoupling == 1 && any(p.electricalModel ∈ [2, 3])) || withMassMatrix
-        dxdt[2*p.nMechTotal+1:2*p.nMechTotal+p.nElecTotal] .= (p.A2 * x .- FesNL)
+    dxdt[p.nMechTotal+1:2*p.nMechTotal] = x[1:p.nMechTotal]
+    if (p.elecLongCoupling == 1 && any(p.electricalModel ∈ [2, 3])) || p.withMassMatrix
+        dxdt[2*p.nMechTotal+1:2*p.nMechTotal+p.nElecTotal] = (p.A2 * x .- FesNL)
     else
-        dxdt[2*p.nMechTotal+1:2*p.nMechTotal+p.nElecTotal] .= p.dCe \ (A2 * x .- FesNL)
+        dxdt[2*p.nMechTotal+1:2*p.nMechTotal+p.nElecTotal] = p.dCe \ (A2 * x .- FesNL)
     end
 
-
-    dxdt .+= p.excitation.stimulus!(Vector{Float64}(undef, ny0), p.excitation.stimulus_parameters, t)
+    dxdt .+= p.excitation.stimulus!(Vector{Float64}(undef, p.ny0), p.excitation.stimulus_parameters, t)
 end
