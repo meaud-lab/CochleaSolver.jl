@@ -3,7 +3,7 @@ using DifferentialEquations
 using Statistics
 using LinearAlgebra
 
-struct ExcitationParams
+struct ExcitationParams{T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12}
     N::Int64
     nMechTotal::Int64
     nElecTotal::Int64
