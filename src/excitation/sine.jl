@@ -17,10 +17,10 @@ end
 
 function sine!(V, p, t)
     if t < 0
-        V .*= 0
+        V .= zero(V)
     elseif t < p.tOff
         @. V = p.mag * sin(p.omega * t + p.phi)
     else
-        V .*= 0
+        V .= zero(V)
     end
 end
