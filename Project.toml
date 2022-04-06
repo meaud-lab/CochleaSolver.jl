@@ -1,7 +1,7 @@
 name = "CochleaSolver"
 uuid = "0d52a867-27f1-426e-a67e-933e6e22616c"
 authors = ["Rouleau", "Michael <44850854+mikerouleau@users.noreply.github.com> and contributors"]
-version = "0.1.0"
+version = "0.2.0"
 
 [deps]
 DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
@@ -11,7 +11,7 @@ Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
 MAT = "0.10"
-julia = "1"
+julia = "1.5"
 
 [extras]
 CPUSummary = "2a0fbf3d-bb9c-48f3-b0a9-814d99fd7ab9"
