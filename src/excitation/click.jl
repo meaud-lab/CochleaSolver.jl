@@ -9,10 +9,10 @@ end
 
 function click!(V, p, t)
     if t < 0
-        V .*= 0
+        V .= zero(V)
     elseif t < p.Timpulse
         V = p.V
     else
-        V .*= 0
+        V .= zero(V)
     end
 end
