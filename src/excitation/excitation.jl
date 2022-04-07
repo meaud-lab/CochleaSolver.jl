@@ -26,9 +26,15 @@ function Excitation(d::Dict)
     elseif typeLoading == 3 #two tones, raised sine
         p = TwoToneParameters(d)
         f = twotone!
+    elseif typeLoading == 4
+        p = GaussianEnvelope(d)
+        f = gaussianenv!
     elseif typeLoading == 9 # two tone suppression
         p = TwoToneParameters(d)
         f = twotonesuppression!
+    elseif typeLoading == 10
+        p = ToneBurstParameters(d)
+        f = toneburst!
     end
     return Excitation(f, p)
 end
