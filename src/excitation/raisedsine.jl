@@ -21,7 +21,7 @@ function RaisedSineParams(d::Dict)
 end
 
 """
-    raisedSine!(V,t, )
+    raisedsine!(V,t, )
 
     Computes raised sine excitation for state space vector V at time t
 """
