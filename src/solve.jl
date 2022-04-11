@@ -64,6 +64,7 @@ function solve_cochlea(file)
     matdata = matread(file)
 
     prob = build_problem(matdata)
+    alg = solver_alg(matdata)
 
     options = matdata["options"]
     rtol = options["RelTol"]
@@ -72,7 +73,7 @@ function solve_cochlea(file)
 
     soltime = @elapsed sol = solve(
         prob,
-        RadauIIA5(autodiff=false),
+        alg,
         progress=true,
         reltol=rtol,
         abstol=atol,
