@@ -19,6 +19,9 @@ export SineParameters, sine!
 include("excitation/twotone.jl")
 export TwoToneParameters, twotone!, twotonesuppression!
 
+include("algs.jl")
+export solver_alg
+
 include("solve.jl")
 export solve_cochlea
 
