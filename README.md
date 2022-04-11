@@ -5,7 +5,7 @@
 
 
 ## Overview
-This package is intended to be an alternative solver for the cochlea model used by the Meaud lab at Georgia Institute of Technology.
+This package is intended to be an alternative solver for the cochlea model used by the [Meaud lab](https://sites.gatech.edu/meaud/) at Georgia Institute of Technology.
 
 ## Installation
 Installation is similar to other Julia packages. From the REPL, 
