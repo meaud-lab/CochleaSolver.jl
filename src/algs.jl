@@ -12,7 +12,7 @@ function solver_alg(d::Dict)
     elseif solver == "ode45"
         return DP5()
     elseif solver == "ode23s"
-        return Rosenbrock23()
+        return Rosenbrock23(autodiff=false)
     elseif solver == "ode113"
         return VCABM()
     elseif solver == "ode15s"
@@ -26,7 +26,10 @@ function solver_alg(d::Dict)
 
         ## Julia-specific algs
     elseif solver == "RadauIIA5"
+        @warn "RadauIIA5 chosen; may be inaccurate for some simulations"
         return RadauIIA5(autodiff=false)
+    elseif solver == "Rosenbrock23"
+        return Rosenbrock23(autodiff=false)
     elseif solver == "Tsit5"
         return Tsit5()
     elseif solver == "ORK256"
@@ -41,6 +44,7 @@ function solver_alg(d::Dict)
         return TRBDF2(autodiff=false)
     else #Default
         @warn "Default alg chosen"
+        @warn "RadauIIA5 chosen; may be inaccurate for some simulations"
         return RadauIIA5(autodiff=false)
     end
 end
