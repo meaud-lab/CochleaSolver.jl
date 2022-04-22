@@ -12,7 +12,7 @@ This package is intended to be an alternative solver for the cochlea model used 
 Installation is similar to other Julia packages. From the REPL, 
 ```sh
 julia> using Pkg
-julia> Pgk.add("https://github.com/mikerouleau/CochleaSolver.jl")
+julia> Pkg.add("https://github.com/mikerouleau/CochleaSolver.jl")
 ```
 ### PACE
 PACE has excellent [docs](https://docs.pace.gatech.edu/software/julia/) that can help get started with Julia on PACE. For basic installation of this package in the global environment, the following PBS script is given as a guide:
