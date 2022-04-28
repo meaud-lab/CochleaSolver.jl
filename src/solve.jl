@@ -27,28 +27,28 @@ struct ExcitationParams{T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12}
     nuHB::Int64
 end
 
-function ExcitationParams(input::Dict)
-    excitation = Excitation(input)
+function ExcitationParams(d::Dict)
+    excitation = Excitation(d)
     Nl = 4 #number of Gaussian integration points
     #deconstruct stuff here
-    N = Int(input["N"])
-    nMechTotal = Int64(input["nMechTotal"])
-    nElecTotal = Int64(input["nElecTotal"])
-    elecLongCoupling = Int64(input["elecLongCoupling"])
-    electricalModel = Int64(input["electricalModel"])
-    A1 = input["A1"]
-    A2 = input["A2"]
-    dCe = input["Ce"]
-    Y_HB = input["Y_HB"]
-    B0 = input["B0"]
-    X0 = input["X0"]
-    deltaX = input["deltaX"]
-    q = input["q"]
-    IhbNLFactor = input["IhbNLFactor"]
-    Y_FesNL = input["Y_FesNL"]
-    P0 = input["P0"]
-    withMassMatrix = input["withMassMatrix"]
-    return ExcitationParams(N, nMechTotal, nElecTotal, elecLongCoupling, electricalModel, A1, A2, dCe, Y_HB, B0, X0, deltaX, q, IhbNLFactor, Y_FesNL, P0, withMassMatrix, Nl, excitation, length(input["y0"]), size(Y_HB[1], 1))
+    N = Int64(d["N"])
+    nMechTotal = Int64(d["nMechTotal"])
+    nElecTotal = Int64(d["nElecTotal"])
+    elecLongCoupling = Int64(d["elecLongCoupling"])
+    electricalModel = Int64(d["electricalModel"])
+    A1 = d["A1"]
+    A2 = d["A2"]
+    dCe = d["Ce"] #why is this renamed?
+    Y_HB = d["Y_HB"]
+    B0 = d["B0"]
+    X0 = d["X0"]
+    deltaX = d["deltaX"]
+    q = d["q"]
+    IhbNLFactor = d["IhbNLFactor"]
+    Y_FesNL = d["Y_FesNL"]
+    P0 = d["P0"]
+    withMassMatrix = d["withMassMatrix"]
+    return ExcitationParams(N, nMechTotal, nElecTotal, elecLongCoupling, electricalModel, A1, A2, dCe, Y_HB, B0, X0, deltaX, q, IhbNLFactor, Y_FesNL, P0, withMassMatrix, Nl, excitation, length(d["y0"]), size(Y_HB[1], 1))
 end
 
 
