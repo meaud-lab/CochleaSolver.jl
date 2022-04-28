@@ -82,7 +82,8 @@ function solve_cochlea(file)
     )
 
     #save
-    matopen("julia_soln.mat", "w") do file
+    outputfile = matdata["JuliaOutFilename"]
+    matopen("outputfile", "w") do file
         write(file, "Y", sol.u)
         write(file, "T", sol.t)
         write(file, "soltime", soltime)
