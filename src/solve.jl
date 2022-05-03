@@ -69,7 +69,6 @@ function solve_cochlea(file)
     options = matdata["options"]
     rtol = options["RelTol"]
     atol = options["AbsTol"]
-    jpattern = options["JPattern"]
 
     soltime = @elapsed sol = solve(
         prob,
@@ -77,7 +76,6 @@ function solve_cochlea(file)
         progress=true,
         reltol=rtol,
         abstol=atol,
-        jac_prototype=jpattern,
         save_everystep=false
     )
 
@@ -102,10 +100,18 @@ function build_problem(d::Dict)
     params = ExcitationParams(d)
     fun! = dxFENonLinearVector3!
 
-    odefun = ODEFunction(fun!, mass_matrix=d["options"]["Mass"])
+    options = d["options"]
+
+    odefun = ODEFunction(fun!, mass_matrix=options["Mass"], jac_prototype=options["JPattern"])
 
     tspan = (d["tspan"][1], d["tspan"][end])
-    problem = ODEProblem{true}(odefun, d["y0"], tspan, params, saveat=d["tspan"])
+    problem = ODEProblem{true}(
+        odefun,
+        d["y0"],
+        tspan,
+        params,
+        saveat=d["tspan"]
+    )
     return problem
 end
 
