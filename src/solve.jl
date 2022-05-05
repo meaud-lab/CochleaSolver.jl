@@ -2,6 +2,8 @@ using MAT
 using DifferentialEquations
 using Statistics
 using LinearAlgebra
+using LoggingExtras
+using Dates: now
 
 struct ExcitationParams{T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12}
     N::Int64
@@ -63,33 +65,44 @@ function solve_cochlea(file)
 
     matdata = matread(file)
 
-    prob = build_problem(matdata)
-    alg = solver_alg(matdata)
-
-    options = matdata["options"]
-    rtol = options["RelTol"]
-    atol = options["AbsTol"]
-
-    soltime = @elapsed sol = solve(
-        prob,
-        alg,
-        progress=true,
-        reltol=rtol,
-        abstol=atol,
-        save_everystep=false
-    )
-
-    #save
-    if "JuliaOutFilename" ∈ keys(matdata)
-        outputfile = matdata["JuliaOutFilename"]
+    if "logfile" ∈ keys(matdata)
+        log = FileLogger(matdata["logfile"])
     else
-        outputfile = "julia_soln.mat"
+        log = FileLogger("julia.log")
     end
 
-    matopen(outputfile, "w") do file
-        write(file, "Y", sol.u)
-        write(file, "T", sol.t)
-        write(file, "soltime", soltime)
+    with_logger(log) do
+        prob = build_problem(matdata)
+        alg = solver_alg(matdata)
+        cb = DiscreteCallback(log_condition, log_affect)
+
+        options = matdata["options"]
+        rtol = options["RelTol"]
+        atol = options["AbsTol"]
+
+        soltime = @elapsed sol = solve(
+            prob,
+            alg,
+            callback=cb,
+            progress=false, #using custom progress
+            reltol=rtol,
+            abstol=atol,
+            save_everystep=false
+        )
+
+        #save
+        if "JuliaOutFilename" ∈ keys(matdata)
+            outputfile = matdata["JuliaOutFilename"]
+        else
+            outputfile = "julia_soln.mat"
+        end
+
+        matopen(outputfile, "w") do file
+            write(file, "Y", sol.u)
+            write(file, "T", sol.t)
+            write(file, "soltime", soltime)
+        end
+        @info "Output saved to $outputfile"
     end
     return 0
 end
@@ -145,4 +158,10 @@ function dxFENonLinearVector3!(dxdt, x, p, t)
     end
 
     dxdt .+= p.excitation.stimulus!(Vector{Float64}(undef, p.ny0), p.excitation.stimulus_parameters, t)
+end
+
+# Logging Callback
+log_condition(u, t, integrator) = integrator.iter % 2000 == 0
+function log_affect(integrator)
+    @info now() integrator.iter integrator.t
 end

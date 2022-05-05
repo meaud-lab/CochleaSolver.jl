@@ -106,3 +106,7 @@ Required inputs for all excitations include:
   * tR
   * T_Stimulus
   * v
+
+### Optional Inputs
+  * JuliaOutFilename (String) - path to output *.mat file. Default is "julia_soln.mat"
+  * logfile (String) - path to desired log file. Default is "julia.log"
