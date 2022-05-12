@@ -5,7 +5,12 @@ using DifferentialEquations
 Switch to determine which algorithm to use for the ode solver. Default is RadauIIA5.
 """
 function solver_alg(d::Dict)
-    solver = d["ODE_SOLVER"]
+    if "ODE_SOLVER" ∈ keys(d)
+        solver = d["ODE_SOLVER"]
+    else
+        solver = "default"
+    end
+
     ## MATLAB translations
     if solver == "ode23"
         return BS3()

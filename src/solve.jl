@@ -2,6 +2,8 @@ using MAT
 using DifferentialEquations
 using Statistics
 using LinearAlgebra
+using LoggingExtras
+using Dates: now
 
 struct ExcitationParams{T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12}
     N::Int64
@@ -27,28 +29,28 @@ struct ExcitationParams{T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12}
     nuHB::Int64
 end
 
-function ExcitationParams(input::Dict)
-    excitation = Excitation(input)
+function ExcitationParams(d::Dict)
+    excitation = Excitation(d)
     Nl = 4 #number of Gaussian integration points
     #deconstruct stuff here
-    N = Int(input["N"])
-    nMechTotal = Int64(input["nMechTotal"])
-    nElecTotal = Int64(input["nElecTotal"])
-    elecLongCoupling = Int64(input["elecLongCoupling"])
-    electricalModel = Int64(input["electricalModel"])
-    A1 = input["A1"]
-    A2 = input["A2"]
-    dCe = input["Ce"]
-    Y_HB = input["Y_HB"]
-    B0 = input["B0"]
-    X0 = input["X0"]
-    deltaX = input["deltaX"]
-    q = input["q"]
-    IhbNLFactor = input["IhbNLFactor"]
-    Y_FesNL = input["Y_FesNL"]
-    P0 = input["P0"]
-    withMassMatrix = input["withMassMatrix"]
-    return ExcitationParams(N, nMechTotal, nElecTotal, elecLongCoupling, electricalModel, A1, A2, dCe, Y_HB, B0, X0, deltaX, q, IhbNLFactor, Y_FesNL, P0, withMassMatrix, Nl, excitation, length(input["y0"]), size(Y_HB[1], 1))
+    N = Int64(d["N"])
+    nMechTotal = Int64(d["nMechTotal"])
+    nElecTotal = Int64(d["nElecTotal"])
+    elecLongCoupling = Int64(d["elecLongCoupling"])
+    electricalModel = Int64(d["electricalModel"])
+    A1 = d["A1"]
+    A2 = d["A2"]
+    dCe = d["Ce"] #why is this renamed?
+    Y_HB = d["Y_HB"]
+    B0 = d["B0"]
+    X0 = d["X0"]
+    deltaX = d["deltaX"]
+    q = d["q"]
+    IhbNLFactor = d["IhbNLFactor"]
+    Y_FesNL = d["Y_FesNL"]
+    P0 = d["P0"]
+    withMassMatrix = d["withMassMatrix"]
+    return ExcitationParams(N, nMechTotal, nElecTotal, elecLongCoupling, electricalModel, A1, A2, dCe, Y_HB, B0, X0, deltaX, q, IhbNLFactor, Y_FesNL, P0, withMassMatrix, Nl, excitation, length(d["y0"]), size(Y_HB[1], 1))
 end
 
 
@@ -63,29 +65,44 @@ function solve_cochlea(file)
 
     matdata = matread(file)
 
-    prob = build_problem(matdata)
-    alg = solver_alg(matdata)
+    if "logfile" ∈ keys(matdata)
+        log = FileLogger(matdata["logfile"])
+    else
+        log = FileLogger("julia.log")
+    end
 
-    options = matdata["options"]
-    rtol = options["RelTol"]
-    atol = options["AbsTol"]
-    jpattern = options["JPattern"]
+    with_logger(log) do
+        prob = build_problem(matdata)
+        alg = solver_alg(matdata)
+        cb = DiscreteCallback(log_condition, log_affect)
 
-    soltime = @elapsed sol = solve(
-        prob,
-        alg,
-        progress=true,
-        reltol=rtol,
-        abstol=atol,
-        jac_prototype=jpattern,
-        save_everystep=false
-    )
+        options = matdata["options"]
+        rtol = options["RelTol"]
+        atol = options["AbsTol"]
 
-    #save
-    matopen("julia_soln.mat", "w") do file
-        write(file, "Y", sol.u)
-        write(file, "T", sol.t)
-        write(file, "soltime", soltime)
+        soltime = @elapsed sol = solve(
+            prob,
+            alg,
+            callback=cb,
+            progress=false, #using custom progress
+            reltol=rtol,
+            abstol=atol,
+            save_everystep=false
+        )
+
+        #save
+        if "JuliaOutFilename" ∈ keys(matdata)
+            outputfile = matdata["JuliaOutFilename"]
+        else
+            outputfile = "julia_soln.mat"
+        end
+
+        matopen(outputfile, "w") do file
+            write(file, "Y", sol.u)
+            write(file, "T", sol.t)
+            write(file, "soltime", soltime)
+        end
+        @info "Output saved to $outputfile"
     end
     return 0
 end
@@ -96,10 +113,18 @@ function build_problem(d::Dict)
     params = ExcitationParams(d)
     fun! = dxFENonLinearVector3!
 
-    odefun = ODEFunction(fun!, mass_matrix=d["options"]["Mass"])
+    options = d["options"]
+
+    odefun = ODEFunction(fun!, mass_matrix=options["Mass"], jac_prototype=options["JPattern"])
 
     tspan = (d["tspan"][1], d["tspan"][end])
-    problem = ODEProblem{true}(odefun, d["y0"], tspan, params, saveat=d["tspan"])
+    problem = ODEProblem{true}(
+        odefun,
+        d["y0"],
+        tspan,
+        params,
+        saveat=d["tspan"]
+    )
     return problem
 end
 
@@ -133,4 +158,10 @@ function dxFENonLinearVector3!(dxdt, x, p, t)
     end
 
     dxdt .+= p.excitation.stimulus!(Vector{Float64}(undef, p.ny0), p.excitation.stimulus_parameters, t)
+end
+
+# Logging Callback
+log_condition(u, t, integrator) = integrator.iter % 2000 == 0
+function log_affect(integrator)
+    @info now() integrator.iter integrator.t
 end

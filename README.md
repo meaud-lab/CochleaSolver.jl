@@ -44,4 +44,69 @@ using CochleaSolver
 solve_cochlea("input_datafile.mat")
 ```
 
-Afterwards, load the output data file (currently "julia_soln.mat") and finish post-processing as necessary in MATLAB.
+Afterwards, load the output data file (defaults to "julia_soln.mat") and finish post-processing as necessary in MATLAB.
+
+## Inputs
+Aside from pointing the solver to the proper input MAT-file (see [Use](#use) for example), all inputs are passed as variables within that MAT-file. The required inputs depend primarily on excitation type, but several are common to all excitations. All input variable names are case-sensitive and are adopted from the existing MATLAB variable names.
+### Common
+Required inputs for all excitations include:
+  * JuliaOutFilename (String) - output filename
+  * options (MATLAB ODEoptions type) - ODE Solver options
+  * tspan (Vector{Real}) - points to save solution at
+  * ODE_SOLVER (String) - ODE solver to use
+  * N (Int) - DOF?
+  * nMechTotal (Int)
+  * nElecTotal (Int)
+  * elecLongCoupling (Int)
+  * electricalModel (Int)
+  * A1
+  * A2
+  * Ce
+  * Y_HB
+  * B0
+  * X0
+  * deltaX
+  * q
+  * IhbNLFactor
+  * Y_FesNL
+  * P0
+  * withMassMatrix
+  * typeLoading (Int) - excitation type
+
+### Excitation-specific
+#### Click (typeLoading = 0)
+  * Timpulse
+  * v
+#### Sine (typeLoading = 1)
+  * Force_correction
+  * Nperiod
+  * omega
+  * v
+#### Raised Sine (typeLoading = 2)
+  * Force_correction
+  * omega
+  * tR
+  * tOn
+  * v
+#### Two Tone (typeLoading = 3 or 9)
+  * Force_correction
+  * omega1
+  * omega2
+  * tR
+  * tOn
+  * v
+#### Gaussian Envelope (typeLoading = 4)
+  * t0_GaussEnv
+  * sigma_GaussEnv
+  * F0
+  * v
+#### Tone Burst (typeLoading = 10)
+  * Force_correction
+  * omega
+  * tR
+  * T_Stimulus
+  * v
+
+### Optional Inputs
+  * JuliaOutFilename (String) - path to output *.mat file. Default is "julia_soln.mat"
+  * logfile (String) - path to desired log file. Default is "julia.log"
