@@ -31,7 +31,7 @@ function twotone!(V, p, t)
     elseif t < p.t0
         @. V = sin(p.omega[1] * t + p.phi[1]) * p.mag[1]
         @. V += sin(p.omega[2] * t + p.phi[2]) * p.mag[2]
-    elseif t < tOn
+    elseif t < p.tOn
         @. V = sin(p.omega[1] * t + p.phi[1]) * (1 + cos(π * (t - p.t0) / p.tR)) / 2 * p.mag[1] #V1
         @. V += sin(p.omega[2] * t + p.phi[2]) * (1 + cos.(π * (t - p.t0) / p.tR)) / 2 * p.mag[2] #V2
     else
