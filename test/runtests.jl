@@ -101,6 +101,64 @@ end
             testv = Vector{ComplexF64}(undef, ndof)
             @test all(gaussianenv!(testv, testparams, 0.0) .== v)
         end
+
+        @testset "sine" begin
+            ndof = rand(3000:50000, 1)[1]
+            v = rand(ComplexF64, ndof)
+            dict = Dict(
+                "v" => v,
+                "Force_correction" => randn(),
+                "Nperiod" => rand(1:100),
+                "omega" => rand(1:25e3)
+            )
+
+            testparams = SineParams(dict)
+            tOff = testparams.tOff
+
+            @test testparams isa SineParams
+            testv = Vector{ComplexF64}(undef, ndof)
+            @test all(sine!(testv, testparams, -1.0) .== 0)
+            @test all(sine!(testv, testparams, tOff + 1.0) .== 0)
+        end
+
+        @testset "toneburst" begin
+            ndof = rand(3000:50000, 1)[1]
+            v = rand(ComplexF64, ndof)
+            dict = Dict(
+                "v" => v,
+                "Force_correction" => randn(),
+                "tR" => rand(1:100),
+                "T_Stimulus" => rand(1:100),
+                "omega" => rand(1:25e3)
+            )
+
+            testparams = ToneBurstParams(dict)
+
+            @test testparams isa ToneBurstParams
+            testv = Vector{ComplexF64}(undef, ndof)
+            @test all(toneburst!(testv, testparams, -1.0) .== 0)
+            @test all(toneburst!(testv, testparams, testparams.T_Stimulus + 1.0) .== 0)
+        end
+
+        @testset "twotone" begin
+            ndof = rand(3000:50000)
+            v = rand(ComplexF64, ndof)
+            dict = Dict(
+                "v" => v,
+                "Force_correction" => rand(2),
+                "tR" => rand(1:100),
+                "tOn" => rand(1:100),
+                "omega1" => rand(1:25e3),
+                "omega2" => rand(1:25e3)
+            )
+
+            testparams = TwoToneParams(dict)
+
+            @test testparams isa TwoToneParams
+            testv = Vector{ComplexF64}(undef, ndof)
+            @test all(twotone!(testv, testparams, -1.0) .== 0)
+            @test all(twotone!(testv, testparams, testparams.tOn + 1.0) .== 0)
+        end
     end
 
     @testset "Full Model Tests" begin
