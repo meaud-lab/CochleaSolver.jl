@@ -158,6 +158,8 @@ end
             testv = Vector{ComplexF64}(undef, ndof)
             @test all(twotone!(testv, testparams, -1.0) .== 0)
             @test all(twotone!(testv, testparams, testparams.tOn + 1.0) .== 0)
+            @test all(twotonesuppression!(testv, testparams, -1.0) .== 0)
+            @test all(twotonesuppression!(testv, testparams, testparams.tOn + 1.0) .== 0)
         end
     end
 
