@@ -68,13 +68,13 @@ function solve_cochlea(file)
     if "logfile" ∈ keys(matdata)
         log = FileLogger(matdata["logfile"])
     else
-        log = FileLogger("julia.log")
+        log = FileLogger("julia_solver.log")
     end
 
     with_logger(log) do
         prob = build_problem(matdata)
         alg = solver_alg(matdata)
-        cb = DiscreteCallback(log_condition, log_affect)
+        cb = DiscreteCallback(log_condition, log_affect, save_positions=(false, false))
 
         options = matdata["options"]
         rtol = options["RelTol"]
@@ -161,7 +161,7 @@ function dxFENonLinearVector3!(dxdt, x, p, t)
 end
 
 # Logging Callback
-log_condition(u, t, integrator) = integrator.iter % 2000 == 0
+log_condition(u, t, integrator) = integrator.iter % 500 == 0
 function log_affect(integrator)
     @info now() integrator.iter integrator.t
 end

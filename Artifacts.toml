@@ -1,0 +1,7 @@
+[Pure_Tone]
+git-tree-sha1 = "89f2291362bf948cabfd984f67d98198458e0711"
+lazy = true
+
+    [[Pure_Tone.download]]
+    sha256 = "1b36b3db2d342774fc696a6397c56e1ddcb142b31cb3c17b1680fe9fd2d777f8"
+    url = "https://www.dropbox.com/s/if4mh1y2cicqwfq/Pure_Tone.tar.gz?dl=1"

@@ -109,4 +109,10 @@ Required inputs for all excitations include:
 
 ### Optional Inputs
   * JuliaOutFilename (String) - path to output *.mat file. Default is "julia_soln.mat"
-  * logfile (String) - path to desired log file. Default is "julia.log"
+  * logfile (String) - path to desired log file. Default is "julia_solver.log"
+
+## Testing
+A test suite can be run by simply running
+```julia
+(Cochlea Solver) Pkg> test
+```

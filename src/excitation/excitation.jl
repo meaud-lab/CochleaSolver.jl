@@ -18,22 +18,22 @@ function Excitation(d::Dict)
         p = ClickParams(d)
         f = click!
     elseif typeLoading == 1 #sinusoid
-        p = SineParameters(d)
+        p = SineParams(d)
         f = sine!
     elseif typeLoading == 2 # riased sinusoid
         p = RaisedSineParams(d)
         f = raisedsine!
     elseif typeLoading == 3 #two tones, raised sine
-        p = TwoToneParameters(d)
+        p = TwoToneParams(d)
         f = twotone!
     elseif typeLoading == 4
-        p = GaussianEnvelope(d)
+        p = GaussianEnvelopeParams(d)
         f = gaussianenv!
     elseif typeLoading == 9 # two tone suppression
-        p = TwoToneParameters(d)
+        p = TwoToneParams(d)
         f = twotonesuppression!
     elseif typeLoading == 10
-        p = ToneBurstParameters(d)
+        p = ToneBurstParams(d)
         f = toneburst!
     end
     return Excitation(f, p)
