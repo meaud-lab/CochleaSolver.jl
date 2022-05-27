@@ -1,7 +1,7 @@
 name = "CochleaSolver"
 uuid = "0d52a867-27f1-426e-a67e-933e6e22616c"
 authors = ["Rouleau", "Michael <44850854+mikerouleau@users.noreply.github.com> and contributors"]
-version = "0.4.0"
+version = "0.4.1"
 
 [deps]
 ArtifactUtils = "8b73e784-e7d8-4ea5-973d-377fed4e3bce"
