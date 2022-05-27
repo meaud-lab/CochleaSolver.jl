@@ -156,6 +156,7 @@ end
 
             @test testparams isa TwoToneParams
             testv = Vector{ComplexF64}(undef, ndof)
+            rand!(testv)
             @test all(twotone!(testv, testparams, -1.0) .== 0)
             @test all(twotone!(testv, testparams, testparams.tOn + 1.0) .== 0)
             @test all(twotonesuppression!(testv, testparams, -1.0) .== 0)
