@@ -19,23 +19,26 @@ function TwoToneParams(d::Dict)
     mag = map(x -> abs.(x), force)
     phi = map(x -> angle.(x), force)
     omega = [d["omega1"], d["omega2"]]
+    if ~(d["tR"] < (d["tOn"] - d["tR"]) < d["tOn"])
+        @warn "Something looks off with your time parameters" d["tOn"] d["tR"]
+    end
     return TwoToneParams(omega, mag, phi, force, d["tR"], d["tOn"])
 end
 
 function twotone!(V, p, t)
     if t < 0
-        V .= zero(V)
+        V = zero(V)
     elseif t < p.tR
-        @. V = sin(p.omega[1] * t + p.phi[1]) * (1 + cos(π * (t / p.tR - 1))) / 2 * p.mag[1] #V1
+        V = @. sin(p.omega[1] * t + p.phi[1]) * (1 + cos(π * (t / p.tR - 1))) / 2 * p.mag[1] #V1
         @. V += sin(p.omega[2] * t + p.phi[2]) * (1 + cos.(π * (t / p.tR - 1))) / 2 * p.mag[2] #V2
     elseif t < p.t0
-        @. V = sin(p.omega[1] * t + p.phi[1]) * p.mag[1]
+        V = @. sin(p.omega[1] * t + p.phi[1]) * p.mag[1]
         @. V += sin(p.omega[2] * t + p.phi[2]) * p.mag[2]
     elseif t < p.tOn
-        @. V = sin(p.omega[1] * t + p.phi[1]) * (1 + cos(π * (t - p.t0) / p.tR)) / 2 * p.mag[1] #V1
+        V = @. sin(p.omega[1] * t + p.phi[1]) * (1 + cos(π * (t - p.t0) / p.tR)) / 2 * p.mag[1] #V1
         @. V += sin(p.omega[2] * t + p.phi[2]) * (1 + cos.(π * (t - p.t0) / p.tR)) / 2 * p.mag[2] #V2
     else
-        V .= zero(V)
+        V = zero(V)
     end
 end
 

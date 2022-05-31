@@ -3,6 +3,7 @@ using Test
 using LazyArtifacts
 using Pkg.Artifacts
 using MAT: matread
+using Random: rand!
 
 function safe_rm(file; force=false)
     # work-around for JuliaLang/julia#29658 JuliaLang/julia#39457
@@ -57,6 +58,7 @@ end
 
 
             testv = Vector{Float64}(undef, ndof)
+            rand!(testv)
             #t<0
             @test all(raisedsine!(testv, testparams, -rand(Float64, 1)[1]) .== 0)
         end
@@ -75,6 +77,7 @@ end
             @test testparams.Timpulse == t
 
             testv = Vector{Float64}(undef, ndof)
+            rand!(testv)
             @test all(click!(testv, testparams, -0.1) .== 0)
             @test all(click!(testv, testparams, 0) .== v)
             @test all(click!(testv, testparams, t / 2) .== v)
@@ -99,6 +102,7 @@ end
 
             @test testparams isa GaussianEnvelopeParams
             testv = Vector{ComplexF64}(undef, ndof)
+            rand!(testv)
             @test all(gaussianenv!(testv, testparams, 0.0) .== v)
         end
 
@@ -117,6 +121,7 @@ end
 
             @test testparams isa SineParams
             testv = Vector{ComplexF64}(undef, ndof)
+            rand!(testv)
             @test all(sine!(testv, testparams, -1.0) .== 0)
             @test all(sine!(testv, testparams, tOff + 1.0) .== 0)
         end
@@ -136,6 +141,7 @@ end
 
             @test testparams isa ToneBurstParams
             testv = Vector{ComplexF64}(undef, ndof)
+            rand!(testv)
             @test all(toneburst!(testv, testparams, -1.0) .== 0)
             @test all(toneburst!(testv, testparams, testparams.T_Stimulus + 1.0) .== 0)
         end
@@ -146,8 +152,8 @@ end
             dict = Dict(
                 "v" => v,
                 "Force_correction" => rand(2),
-                "tR" => rand(1:100),
-                "tOn" => rand(1:100),
+                "tR" => rand(1:25),
+                "tOn" => rand(55:100),
                 "omega1" => rand(1:25e3),
                 "omega2" => rand(1:25e3)
             )
@@ -156,6 +162,7 @@ end
 
             @test testparams isa TwoToneParams
             testv = Vector{ComplexF64}(undef, ndof)
+            rand!(testv)
             @test all(twotone!(testv, testparams, -1.0) .== 0)
             @test all(twotone!(testv, testparams, testparams.tOn + 1.0) .== 0)
             @test all(twotonesuppression!(testv, testparams, -1.0) .== 0)

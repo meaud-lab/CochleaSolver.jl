@@ -1,7 +1,7 @@
 name = "CochleaSolver"
 uuid = "0d52a867-27f1-426e-a67e-933e6e22616c"
 authors = ["Rouleau", "Michael <44850854+mikerouleau@users.noreply.github.com> and contributors"]
-version = "0.4.0"
+version = "0.4.1"
 
 [deps]
 ArtifactUtils = "8b73e784-e7d8-4ea5-973d-377fed4e3bce"
@@ -24,6 +24,7 @@ julia = "1.5"
 [extras]
 CPUSummary = "2a0fbf3d-bb9c-48f3-b0a9-814d99fd7ab9"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [targets]
-test = ["Test"]
+test = ["Test", "Random"]
