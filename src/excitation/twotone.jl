@@ -19,6 +19,9 @@ function TwoToneParams(d::Dict)
     mag = map(x -> abs.(x), force)
     phi = map(x -> angle.(x), force)
     omega = [d["omega1"], d["omega2"]]
+    if ~(d["tR"] < (d["tOn"] - d["tR"]) < d["tOn"])
+        @warn "Something looks off with your time parameters" d["tOn"] d["tR"]
+    end
     return TwoToneParams(omega, mag, phi, force, d["tR"], d["tOn"])
 end
 
