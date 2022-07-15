@@ -13,43 +13,55 @@ function solver_alg(d::Dict)
 
     ## MATLAB translations
     if solver == "ode23"
-        return BS3()
+        solver = "ode23/BS3"
+        solverfun = BS3()
     elseif solver == "ode45"
-        return DP5()
+        solver = "ode45/DP5"
+        solverfun = DP5()
     elseif solver == "ode23s"
-        return Rosenbrock23(autodiff=false)
+        solver = "ode23s/Rosenbrock23"
+        solverfun = Rosenbrock23(autodiff=false)
     elseif solver == "ode113"
-        return VCABM()
+        solver = "ode113/VCABM"
+        solverfun = VCABM()
     elseif solver == "ode15s"
-        return QNDF()
+        solver = "ode15s/QNDF"
+        solverfun = QNDF()
     elseif solver == "ode23t"
-        return Trapezoid()
+        solver = "ode23t/Trapezoid"
+        solverfun = Trapezoid()
     elseif solver == "ode23tb"
-        return TRBDF2()
+        solver = "ode23tb/TRBDF2"
+        solverfun = TRBDF2()
     elseif solver == "ode15i"
-        return IDA()
+        solver = "ode15i/DFBDF"
+        solverfun = DFBDF()
 
         ## Julia-specific algs
     elseif solver == "RadauIIA5"
         @warn "RadauIIA5 chosen; may be inaccurate for some simulations"
-        return RadauIIA5(autodiff=false)
+        solverfun = RadauIIA5(autodiff=false)
     elseif solver == "Rosenbrock23"
-        return Rosenbrock23(autodiff=false)
+        solverfun = Rosenbrock23(autodiff=false)
     elseif solver == "Tsit5"
-        return Tsit5()
+        solverfun = Tsit5()
     elseif solver == "ORK256"
-        return ORK256()
+        solverfun = ORK256()
     elseif solver == "Rodas4"
-        return Rodas4()
+        solverfun = Rodas4()
     elseif solver == "Vern7"
-        return Vern7()
+        solverfun = Vern7()
     elseif solver == "KenCarp4"
-        return KenCarp4(autodiff=false)
+        solverfun = KenCarp4(autodiff=false)
     elseif solver == "TRBDF2"
-        return TRBDF2(autodiff=false)
+        solverfun = TRBDF2(autodiff=false)
     else #Default
         @warn "Default alg chosen"
         @warn "RadauIIA5 chosen; may be inaccurate for some simulations"
-        return RadauIIA5(autodiff=false)
+        solver = "RadauIIA5"
+        solverfun = RadauIIA5(autodiff=false)
     end
+
+    @info "using $solver solver"
+    return solverfun
 end
