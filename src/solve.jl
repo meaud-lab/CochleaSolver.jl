@@ -100,6 +100,7 @@ function solve_cochlea(file)
         matopen(outputfile, "w") do file
             write(file, "Y", sol.u)
             write(file, "T", sol.t)
+            write(file, "alg", string(alg))
             write(file, "soltime", soltime)
         end
         @info "Output saved to $outputfile"
