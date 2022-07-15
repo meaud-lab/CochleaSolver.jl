@@ -5,13 +5,13 @@ using Pkg.Artifacts
 using MAT: matread
 using Random: rand!
 
-function safe_rm(file; force=false)
+function safe_rm(args...)
     # work-around for JuliaLang/julia#29658 JuliaLang/julia#39457
     if Sys.iswindows()
         t = Timer(10)
         while true
             try
-                rm(file, force=force)
+                rm(args...)
                 break
             catch err
                 err isa Base.IOError || rethrow()
@@ -25,7 +25,7 @@ function safe_rm(file; force=false)
             end
         end
     else
-        rm(file, force=force)
+        rm(args...)
     end
 end
 
