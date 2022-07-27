@@ -1,8 +1,5 @@
 module CochleaSolver
 
-# include("originalsolver.jl")
-# export solve_cochlea
-
 # Excitation
 include("excitation/excitation.jl")
 export Excitation
