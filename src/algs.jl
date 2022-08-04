@@ -11,13 +11,6 @@ function solver_alg(d::Dict)
         solver = "default"
     end
 
-    nomass = ["ode23", "ode45", "ode113", "ode23tb", "ode15i", "Tsit5", "ORK256", "Vern7", "KenCarp4"]
-
-    if "withMassMatrix" ∈ keys(d) && d["withMassMatrix"] && solver ∈ nomass
-        @error "$solver does not support mass matrices. Using default solver."
-        solver = "defualt"
-    end
-
     ## MATLAB translations
     if solver == "ode23" #no mass_matrix
         solver = "ode23/BS3"
