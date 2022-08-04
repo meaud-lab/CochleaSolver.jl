@@ -110,9 +110,41 @@ Required inputs for all excitations include:
 ### Optional Inputs
   * JuliaOutFilename (String) - path to output *.mat file. Default is "julia_soln.mat"
   * logfile (String) - path to desired log file. Default is "julia_solver.log"
+  * ODE_SOLVER (char vector) - specify solver to use
+
+### Solvers
+If no solver is specified or if no match is found, RadauIIA5 is selected as the default solver. Solvers are selected by setting `ODE_SOLVER` to one of the following *character arrays*:
+#### MATLAB Translations
+- `ode23`: `BS3()`
+- `ode45`: `DP5()`
+- `ode23s`: `Rosenbrock23(autodiff=false)`
+- `ode113`: `VCABM()`
+- `ode15s`: `QNDF(autodiff=false)`
+- `ode23t`: `Trapezoid(autodiff=false)`
+- `ode23tb`: `TRBDF2()`
+- `ode15i`: `DFBDF()`
+
+#### Julia
+- `RadauIIA5`:`RadauIIA5(autodiff=false)`
+- `Rosenbrock23`:`Rosenbrock23(autodiff=false)`
+- `Tsit5`:`Tsit5()`
+- `ORK256`:`ORK256()`
+- `Rodas4`:`Rodas4(autodiff=false)`
+- `Vern7`:`Vern7()`
+- `KenCarp4`:`KenCarp4()`
+- `TRBDF2`:`TRBDF2(autodiff=false)`
+
+Mass matrices are only accepted for algoritms with `autodiff=false` (this setting doesn't allow mass matrices, but happens to indicate with this set).
 
 ## Testing
 A test suite can be run by simply running
 ```julia
-(Cochlea Solver) Pkg> test
+Pkg> test
 ```
+
+
+# Dev Docs
+The following details the internal operation of this package
+
+## Testing Artifact Generation
+Artifacts are currently hosted on the lab's DropBox.
