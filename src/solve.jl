@@ -4,7 +4,7 @@ using OrdinaryDiffEq: is_mass_matrix_alg
 using Statistics
 using LinearAlgebra
 using LoggingExtras
-using Logging: global_logger
+using Logging: global_logger, SimpleLogger
 using Dates: now
 
 struct ExcitationParams{T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12}
@@ -68,10 +68,11 @@ function solve_cochlea(file)
     matdata = matread(file)
 
     if "logfile" ∈ keys(matdata)
-        log = FileLogger(matdata["logfile"])
+        io = open(matdata["logfile"], "w+")
     else
-        log = FileLogger("julia_solver.log")
+        io = open("julia_solver.log", "w+")
     end
+    log = SimpleLogger(io)
     global_logger(log)
 
     with_logger(log) do
@@ -108,6 +109,7 @@ function solve_cochlea(file)
         end
         @info "Output saved to $outputfile"
     end
+    close(io)
     return 0
 end
 
