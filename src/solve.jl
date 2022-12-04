@@ -1,8 +1,10 @@
 using MAT
 using DifferentialEquations
+using OrdinaryDiffEq: is_mass_matrix_alg
 using Statistics
 using LinearAlgebra
 using LoggingExtras
+using Logging: global_logger, SimpleLogger
 using Dates: now
 
 struct ExcitationParams{T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12}
@@ -66,14 +68,16 @@ function solve_cochlea(file)
     matdata = matread(file)
 
     if "logfile" ∈ keys(matdata)
-        log = FileLogger(matdata["logfile"])
+        io = open(matdata["logfile"], "w+")
     else
-        log = FileLogger("julia_solver.log")
+        io = open("julia_solver.log", "w+")
     end
+    log = SimpleLogger(io)
+    global_logger(log)
 
     with_logger(log) do
-        prob = build_problem(matdata)
         alg = solver_alg(matdata)
+        prob = build_problem(matdata, alg)
         cb = DiscreteCallback(log_condition, log_affect, save_positions=(false, false))
 
         options = matdata["options"]
@@ -105,18 +109,25 @@ function solve_cochlea(file)
         end
         @info "Output saved to $outputfile"
     end
+    close(io)
     return 0
 end
 
 
 
-function build_problem(d::Dict)
+function build_problem(d::Dict, alg)
     params = ExcitationParams(d)
     fun! = dxFENonLinearVector3!
 
     options = d["options"]
 
-    odefun = ODEFunction(fun!, mass_matrix=options["Mass"], jac_prototype=options["JPattern"])
+    if is_mass_matrix_alg(alg)
+        odefun = ODEFunction(fun!, mass_matrix=options["Mass"], jac_prototype=options["JPattern"])
+    else
+        @error ("Mass Matrix Not Supported with $alg")
+        throw("Mass Matrix Not Supported with $alg")
+        # odefun = ODEFunction(lessfun!, jac_prototype=options["JPattern"])
+    end
 
     tspan = (d["tspan"][1], d["tspan"][end])
     problem = ODEProblem{true}(

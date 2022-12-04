@@ -1,6 +1,7 @@
 using CochleaSolver
 using Test
 using LazyArtifacts
+using Artifacts
 using Pkg.Artifacts
 using MAT: matread
 using Random: rand!
